@@ -1,6 +1,6 @@
 <service>
 	<serviceName>soporte</serviceName>
-	<serviceDescription><![CDATA[Te ayuda a ponerte en contacto con el servicio de ayuda de Apretaste, y a mantener el registro de tu comunicacion con nosotros]]></serviceDescription>
+	<serviceDescription>Conecta nuestros usuarios con el servicio de ayuda de Apretaste para que hagas preguntas, quejas o sugerencias, y ayuda a mantener el registro de tu comunicacion con nosotros</serviceDescription>
 	<creatorEmail>jaikerkings@yahoo.es</creatorEmail>
 	<serviceCategory>comunicaciones</serviceCategory>
 	<serviceUsage>
@@ -9,10 +9,10 @@
 
 			Por ejemplo:
 			Para: {APRETASTE_EMAIL}
-			Asunto: SOPORTE El servicio X no funciona correctamente 
+			Asunto: SOPORTE El servicio X no funciona correctamente
 
 			Recibir&aacute; un email confirmando que has creado una nueva solicitud de soporte.
-			
+
 			Otro ejemplo:
 			Para: {APRETASTE_EMAIL}
 			Asunto: SOPORTE
