@@ -1,6 +1,6 @@
 <service>
 	<serviceName>soporte</serviceName>
-	<serviceDescription>Conecta nuestros usuarios con el servicio de ayuda de Apretaste para que hagas preguntas, quejas o sugerencias, y ayuda a mantener el registro de tu comunicacion con nosotros</serviceDescription>
+	<serviceDescription>Le conecta con el servicio de ayuda de Apretaste para que envie preguntas, quejas o sugerencias, y guarda el registro de su comunicacion con nosotros</serviceDescription>
 	<creatorEmail>jaikerkings@yahoo.es</creatorEmail>
 	<serviceCategory>comunicaciones</serviceCategory>
 	<serviceUsage>
