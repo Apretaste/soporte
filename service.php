@@ -64,7 +64,7 @@ class Soporte extends Service
 	{
 		// insert ticket
 		$connection = new Connection();
-		$body = substr($request->query, 0, 1023);
+		$body = trim(substr($request->query, 0, 1023));
 		$connection->query("
 			INSERT INTO support_tickets (`from`, `subject`, `body`)
 			VALUES ('{$request->email}', 'Ticket from {$request->email}', '$body')");
