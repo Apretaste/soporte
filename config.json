@@ -1,0 +1,8 @@
+{
+	"name": "soporte",
+	"version": 1,
+	"description": "Le conecta con el servicio de ayuda de Apretaste para que envie preguntas, quejas o sugerencias, y guarda el registro de su comunicacion con nosotros",
+	"creator": "salvi@apretaste.org",
+	"category": "comunicaciones",
+	"listed": true
+}

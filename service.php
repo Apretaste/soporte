@@ -1,106 +1,61 @@
 <?php
 
-class Soporte extends Service
+class Service
 {
 	/**
 	 * Function executed when the service is called
 	 *
 	 * @param Request
-	 * @return Response
+	 * @param Response
 	 */
-	public function _main(Request $request)
-	{
-		$email = $request->email;
-		$userName = $request->username;
+	public function _main(Request $request, Response $response){
+		// @TODO replace email with ids
+		$userEmail = Utils::getPerson($request->person->id)->email;
+		$username = $request->person->username;
 
-		$response = new Response();
-		if (empty($request->query))
-		{
-			// get list of tickets
-			$connection = new Connection();
-			$result = $connection->query("SELECT id, `from`, subject, body, status, requester, creation_date FROM support_tickets WHERE `from` = '{$email}' OR requester = '{$email}' ORDER BY creation_date DESC");
+		// get the list of messages
+		$tickets = Connection::query(
+			"SELECT *
+			FROM support_tickets
+			WHERE `from` = '$userEmail'
+			OR requester = '$userEmail'
+			ORDER BY creation_date ASC");
+		
+		$chat = [];
+		$usernames = [$userEmail => $username];
+		foreach($tickets as $ticket){
+			$from = $ticket->from;
+			$requester = $ticket->requester;
 
-			$tickets = array();
+			// dont lookup for the same email twice
+			if(!in_array($from, $usernames)) $usernames[$from] = Utils::getPerson($from)->username;
 
-			// create array of arrays
-			foreach($result as $ticket){
-				array_push($tickets, $ticket);
-			}
-
-			// get variables to send to the template
-			if (count($tickets) > 0)
-			{
-				$responseContent = array(
-					"tickets" => $tickets,
-					"userName" => $userName,
-					"userEmail" => $email,
-					"ticketsNum" => count($tickets)
-				);
-
-				$response->setCache(180);
-				$response->setResponseSubject("Lista de consultas al soporte");
-				$response->createFromTemplate("ticketsList.tpl", $responseContent);
-			}
-			else
-			{
-				$response->setResponseSubject("No hay consultas abiertas");
-				$response->createFromTemplate("noTickets.tpl", array());
-			}
+			$message = new stdClass();
+			$message->from = $usernames[$from]; //replace emails with usernames, don't send emails in the data
+			$message->text = $ticket->body;
+			$message->date = date_format((new DateTime($ticket->creation_date)),'d/m/Y h:i a');
+			$message->status = $ticket->status;
+			$message->class = $from==$userEmail ? "me":"you";
+			$chat[] = $message;
 		}
-		else //si el request viene con un parametro
-		{
-			if (is_numeric($request->query)) $response = $this->showTicket($request->query);
-			else $response = $this->createTicket($request);
-		}
-
-		// return
-		return $response;
+		
+		$response->setTemplate('main.ejs',['chat' => $chat, 'myUsername' => $username]);
 	}
 
 	/**
 	 * Create a new ticket
+	 * @param Request $request
+	 * @param Response $response
 	 */
-	private function createTicket(Request $request)
-	{
+	public function _escribir(Request $request, Response $response){
+		$message = $request->input->data->message;
+		// @TODO replace email with ids
+		$userEmail = Utils::getPerson($request->person->id)->email;
+
 		// insert ticket
-		$connection = new Connection();
-		$body = $connection->escape($request->query, 1024);
-		$connection->query("
+		$body = Connection::escape($message, 1024);
+		Connection::query("
 			INSERT INTO support_tickets (`from`, `subject`, `body`)
-			VALUES ('{$request->email}', 'Ticket from {$request->email}', '$body')");
-
-		// create response
-		$response = new Response();
-		$response->setResponseSubject("Mensaje enviado");
-		$response->createFromTemplate("success.tpl", array());
-		return $response;
-	}
-
-	/**
-	 * Display a full ticket
-	 */
-	private function showTicket($query)
-	{
-		// get ticket
-		$connection = new Connection();
-		$result = $connection->query("SELECT * FROM support_tickets WHERE id = '$query';");
-
-		$response = new Response();
-		if ($result)
-		{
-			$ticket = $result[0];
-			$ticket->username = $this->utils->getUsernameFromEmail($ticket->from);
-
-			$response->setResponseSubject("Ticket #{$ticket->id}");
-			$response->createFromTemplate("showTicket.tpl", array("ticket" => $ticket));
-		}
-		else
-		{
-			$response->setResponseSubject("Ticket no encontrado");
-			$response->createFromText("Disculpe, el ticket solicitado no se encuentra registrado. Por favor verifique el numero e intente de nuevo");
-		}
-
-		$response->setCache();
-		return $response;
+			VALUES ('{$userEmail}', 'Ticket from {$userEmail}', '$body')");
 	}
 }

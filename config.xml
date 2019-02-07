@@ -1,6 +1,0 @@
-<service>
-	<serviceName>soporte</serviceName>
-	<serviceDescription>Le conecta con el servicio de ayuda de Apretaste para que envie preguntas, quejas o sugerencias, y guarda el registro de su comunicacion con nosotros</serviceDescription>
-	<creatorEmail>salvi@apretaste.com</creatorEmail>
-	<serviceCategory>comunicaciones</serviceCategory>
-</service>
