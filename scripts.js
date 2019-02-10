@@ -9,7 +9,7 @@ function sendMessage() {
             'command':'SOPORTE ESCRIBIR',
             'data':{'message':message},
             'redirect':false,
-            'callback':{'name':'sendMessageCallback','data':{'message':message, 'username':myUsername}}
+            'callback':{'name':'sendMessageCallback','data':message}
         });
     }
     else showToast('Minimo 30 caracteres');
@@ -21,9 +21,7 @@ function messageLengthValidate() {
     else $('.helper-text').html('Limite excedido');
 }
 
-function sendMessageCallback(data){
-    let message = data.message;
-    let username = data.username;
+function sendMessageCallback(message){
     if($('#main .chat').length==0){
         $('#main p').remove();
         $('#main').append('<h5 class="center-align">Su conversación con el soporte</h5>')
@@ -43,6 +41,10 @@ function sendMessageCallback(data){
                 `+message+`
             </div>
     `);
+
+    $('html, body').animate({
+        scrollTop: $(".bubble:last-of-type").offset().top
+    }, 1000);
 }
 
 function showToast(text){
