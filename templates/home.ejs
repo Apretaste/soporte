@@ -1,0 +1,43 @@
+<div class="row">
+	<div id="main" class="col s12">
+		<% if(chat.length > 0) { %>
+			<h1>Su conversación con el soporte</h1>
+			<div class="chat">
+				<% chat.forEach(message => { %>
+					<div class="bubble <%= message.class %>">
+						<small>
+							<b>@<%= message.from %></b> - <%= message.date %> 
+							<% var color = message.status=="NEW" ? "white-text blue lighten-1" : "" %>
+							<div class="chip small <%= color %>"><%= message.status %></div>
+						</small>
+						<br>
+						<%= message.text %>
+					</div>
+				<% }) %>
+			</div>
+		<% } else { %>
+			<h1>¡Bienvenido al soporte!</h1>
+			<p>Escríbanos para consultar sus dudas o reportar algun inconveniente, estamos atentos a su solicitud.</p>
+		<% } %>
+	</div>
+</div>
+
+<div class="fixed-action-btn">
+	<a href="#newTicketModal" class="btn-floating btn-large waves-effect waves-light modal-trigger">
+		<i class="large material-icons">create</i>
+	</a>
+</div>
+
+<div id="newTicketModal" class="modal bottom-sheet">
+	<div class="modal-content">
+		<div class="input-field">
+		  <textarea id="message" class="materialize-textarea" oninput="messageLengthValidate()"></textarea>
+		  <label for="message">Consultenos su duda o inconveniente</label>
+		  <span class="helper-text">Restante: 1000</span>
+		</div>
+	</div>	
+	<div class="modal-footer">
+		<a href="#!" class="modal-close waves-effect waves-light btn-flat">Cerrar</a>
+		<a onclick="sendMessage()" class="modal-close waves-effect waves-green btn-flat">Enviar</a>
+	</div>
+</div>
