@@ -11,33 +11,28 @@ class Service
 	public function _main(Request $request, Response $response)
 	{
 		// @TODO replace email with ids
-		$userEmail = Utils::getPerson($request->person->id)->email;
+		$email = $request->person->email;
 		$username = $request->person->username;
 
 		// get the list of messages
 		$tickets = Connection::query("
-			SELECT *
-			FROM support_tickets
-			WHERE `from` = '$userEmail'
-			OR requester = '$userEmail'
-			ORDER BY creation_date ASC");
+			SELECT A.*, B.username 
+			FROM support_tickets A 
+			JOIN person B
+			ON A.from = B.email
+			WHERE A.from = '$email' 
+			OR A.requester = '$email' 
+			ORDER BY A.creation_date ASC");
 
 		// prepare chats for the view
 		$chat = [];
-		$usernames = [$userEmail => $username];
 		foreach($tickets as $ticket) {
-			$from = $ticket->from;
-			$requester = $ticket->requester;
-
-			// dont lookup for the same email twice
-			if( ! in_array($from, $usernames)) $usernames[$from] = Utils::getPerson($from)->username;
-
 			$message = new stdClass();
-			$message->from = $usernames[$from]; //replace emails with usernames
-			$message->text = $ticket->body;
+			$message->class = $ticket->from == $email ? "me" : "you";
+			$message->from = $ticket->username;
+			$message->text = preg_replace('/[\x00-\x1F\x7F]/u', '', $ticket->body);
 			$message->date = date_format((new DateTime($ticket->creation_date)),'d/m/Y h:i a');
 			$message->status = $ticket->status;
-			$message->class = $from==$userEmail ? "me":"you";
 			$chat[] = $message;
 		}
 
@@ -53,13 +48,14 @@ class Service
 	 */
 	public function _escribir(Request $request, Response $response)
 	{
-		$message = $request->input->data->message;
-		$userEmail = Utils::getPerson($request->person->id)->email; // @TODO replace email with ids
+		// get data to save ticket
+		$email = $request->person->email;
+		$message = preg_replace('/[\x00-\x1F\x7F]/u', '', $request->input->data->message);
 
-		// insert ticket
+		// insert the ticket
 		$body = Connection::escape($message, 1024);
 		Connection::query("
 			INSERT INTO support_tickets (`from`, `subject`, `body`)
-			VALUES ('{$userEmail}', 'Ticket from {$userEmail}', '$body')");
+			VALUES ('{$email}', 'Ticket from {$email}', '$body')");
 	}
 }

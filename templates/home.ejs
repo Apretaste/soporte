@@ -1,9 +1,9 @@
 <div class="row">
 	<div id="main" class="col s12">
 		<% if(chat.length > 0) { %>
-			<h1>Su conversación con el soporte</h1>
+			<h1>Su charla con el soporte</h1>
 			<div class="chat">
-				<% chat.forEach(message => { %>
+				<% chat.forEach(function(message) { %>
 					<div class="bubble <%= message.class %>">
 						<small>
 							<b>@<%= message.from %></b> - <%= message.date %> 
