@@ -3,17 +3,17 @@
 		<% if(chat.length > 0) { %>
 			<h1>Su charla con el soporte</h1>
 			<div class="chat">
-				<% chat.forEach(function(message) { %>
-					<div class="bubble <%= message.class %>">
+				<% for(var i=0; i<chat.length; i++) { %>
+					<div class="bubble <%= chat[i].class %>">
 						<small>
-							<b>@<%= message.from %></b> - <%= message.date %> 
-							<% var color = message.status=="NEW" ? "white-text blue lighten-1" : "" %>
-							<div class="chip small <%= color %>"><%= message.status %></div>
+							<b>@<%= chat[i].from %></b> - <%= chat[i].date %> 
+							<% var color = chat[i].status=="NEW" ? "white-text blue lighten-1" : "" %>
+							<div class="chip small <%= color %>"><%= chat[i].status %></div>
 						</small>
 						<br>
-						<%= message.text %>
+						<%= chat[i].text %>
 					</div>
-				<% }) %>
+				<% } %>
 			</div>
 		<% } else { %>
 			<h1>¡Bienvenido al soporte!</h1>
@@ -32,7 +32,7 @@
 	<div class="modal-content">
 		<div class="input-field">
 		  <textarea id="message" class="materialize-textarea" oninput="messageLengthValidate()"></textarea>
-		  <label for="message">Consultenos su duda o inconveniente</label>
+		  <label for="message">Consúltenos su duda o inconveniente</label>
 		  <span class="helper-text">Restante: 1000</span>
 		</div>
 	</div>	

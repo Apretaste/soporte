@@ -3,7 +3,7 @@ $(document).ready(function () {
 });
 
 function sendMessage() {
-	let message = $('#message').val().trim();
+	var message = $('#message').val().trim();
 	if(message.length>=30){
 		apretaste.send({
 			'command':'SOPORTE ESCRIBIR',
@@ -16,7 +16,7 @@ function sendMessage() {
 }
 
 function messageLengthValidate() {
-	let message = $('#message').val().trim();
+	var message = $('#message').val().trim();
 	if(message.length<=1000) $('.helper-text').html('Restante: '+(1000-message.length));
 	else $('.helper-text').html('Limite excedido');
 }
@@ -31,20 +31,12 @@ function sendMessageCallback(message) {
 	};
 
 	// create bubble date
-	let now = new Date(Date.now()).toLocaleString();
+	var now = new Date(Date.now()).toLocaleString();
 	now = now.replace('p. m.','pm');
 	now = now.replace('a. m.','am');
 
 	// append the bubble to teh screen
-	$('.chat').append(`
-		<div class="bubble me">
-			<small>
-				<b>`+myUsername+`</b> - `+now+` 
-				<div class="chip small white-text blue lighten-1">NEW</div>
-			</small>
-			<br>
-			`+message+`
-		</div>`);
+	$('.chat').append('<div class="bubble me"><small><b>'+myUsername+'</b> - '+now+'<div class="chip small white-text blue lighten-1">NEW</div></small><br>'+message+'</div>');
 
 	// scroll to the last bubble
 	var lastBubble = $(".bubble:last-of-type");
