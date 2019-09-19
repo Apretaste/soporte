@@ -52,10 +52,14 @@ class Service
 		$email = $request->person->email;
 		$message = preg_replace('/[\x00-\x1F\x7F]/u', '', $request->input->data->message);
 
+        $app_name = $request->input->app ?? '';
+        $app_version = $request->input->appversion ?? '';
+        $os_version = $request->input->osversion ?? '';
+
 		// insert the ticket
 		$body = Connection::escape($message, 1024);
 		Connection::query("
-			INSERT INTO support_tickets (`from`, `subject`, `body`)
-			VALUES ('{$email}', 'Ticket from {$email}', '$body')");
+			INSERT INTO support_tickets (`from`, `subject`, `body`, app_name, app_version, os_version)
+			VALUES ('{$email}', 'Ticket from {$email}', '$body', '$app_name', '$app_version', '$os_version')");
 	}
 }
