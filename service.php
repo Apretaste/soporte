@@ -61,5 +61,10 @@ class Service
 		Connection::query("
 			INSERT INTO support_tickets (`from`, `subject`, `body`, app_name, app_version, os_version)
 			VALUES ('{$email}', 'Ticket from {$email}', '$body', '$app_name', '$app_version', '$os_version')");
+
+		// save report
+		Connection::query("
+			INSERT INTO support_reports (inserted, new_count) VALUES (CURRENT_DATE, 1)
+			ON DUPLICATE KEY UPDATE new_count=new_count+1");
 	}
 }
