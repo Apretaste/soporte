@@ -26,25 +26,27 @@ class Service
 
 		// prepare chats for the view
 		$chat = [];
-		foreach($tickets as $ticket) {
+		foreach ($tickets as $ticket) {
 			$message = new stdClass();
 			$message->class = $ticket->from == $email ? "me" : "you";
 			$message->from = $ticket->username;
 			$message->text = preg_replace('/[\x00-\x1F\x7F]/u', '', $ticket->body);
-			$message->date = date_format((new DateTime($ticket->creation_date)),'d/m/Y h:i a');
+			$message->date = date_format((new DateTime($ticket->creation_date)), 'd/m/Y h:i a');
 			$message->status = $ticket->status;
 			$chat[] = $message;
 		}
 
 		// send data to the view
-		$response->setTemplate('home.ejs',['chat' => $chat, 'myUsername' => $username]);
+		$response->setTemplate('home.ejs', ['chat' => $chat, 'myUsername' => $username]);
 	}
 
 	/**
 	 * Create a new ticket
 	 *
-	 * @param Request $request
+	 * @param Request  $request
 	 * @param Response $response
+	 *
+	 * @throws \Exception
 	 */
 	public function _escribir(Request $request, Response $response)
 	{
@@ -52,9 +54,9 @@ class Service
 		$email = $request->person->email;
 		$message = preg_replace('/[\x00-\x1F\x7F]/u', '', $request->input->data->message);
 
-        $app_name = $request->input->app ?? '';
-        $app_version = $request->input->appversion ?? '';
-        $os_version = $request->input->osversion ?? '';
+		$app_name = $request->input->app ?? '';
+		$app_version = $request->input->appversion ?? '';
+		$os_version = $request->input->osversion ?? '';
 
 		// insert the ticket
 		$body = Connection::escape($message, 1024);
@@ -66,5 +68,7 @@ class Service
 		Connection::query("
 			INSERT INTO support_reports (inserted, new_count) VALUES (CURRENT_DATE, 1)
 			ON DUPLICATE KEY UPDATE new_count=new_count+1");
+
+		Challenges::complete("write-to-support", $request->person->id);
 	}
 }
