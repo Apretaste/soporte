@@ -22,7 +22,7 @@ class Service
 			ON A.from = B.email
 			WHERE A.from = '$email' 
 			OR A.requester = '$email' 
-			ORDER BY A.creation_date ASC");
+			ORDER BY A.creation_date ASC", true, 'utf8mb4');
 
 		// prepare chats for the view
 		$chat = [];
@@ -62,7 +62,7 @@ class Service
 		$body = Connection::escape($message, 1024);
 		Connection::query("
 			INSERT INTO support_tickets (`from`, `subject`, `body`, app_name, app_version, os_version)
-			VALUES ('{$email}', 'Ticket from {$email}', '$body', '$app_name', '$app_version', '$os_version')");
+			VALUES ('{$email}', 'Ticket from {$email}', '$body', '$app_name', '$app_version', '$os_version')", true, 'utf8mb4');
 
 		// save report
 		Connection::query("
