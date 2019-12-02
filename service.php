@@ -61,8 +61,8 @@ class Service
 		// insert the ticket
 		$body = Connection::escape($message, 1024);
 		Connection::query("
-			INSERT INTO support_tickets (`from`, `subject`, `body`, app_name, app_version, os_version)
-			VALUES ('{$email}', 'Ticket from {$email}', '$body', '$app_name', '$app_version', '$os_version')", true, 'utf8mb4');
+			INSERT INTO support_tickets (`from`, `subject`, `body`, app_name, app_version, os_version, from_id)
+			VALUES ('{$email}', 'Ticket from {$email}', '$body', '$app_name', '$app_version', '$os_version', {$request->person->id})", true, 'utf8mb4');
 
 		// save report
 		Connection::query("
