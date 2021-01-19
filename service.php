@@ -1,5 +1,10 @@
 <?php
 
+use Apretaste\Request;
+use Apretaste\Response;
+use Apretaste\Tutorial;
+use Apretaste\Challenges;
+
 class Service
 {
 	/**
@@ -69,6 +74,10 @@ class Service
 			INSERT INTO support_reports (inserted, new_count) VALUES (CURRENT_DATE, 1)
 			ON DUPLICATE KEY UPDATE new_count=new_count+1");
 
+		// complete challenge
 		Challenges::complete("write-to-support", $request->person->id);
+
+		// complete tutorial
+		Tutorial::complete($request->person->id, 'contact_support');
 	}
 }
